@@ -1,0 +1,170 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--	<head>-->
+<!--		<meta charset="utf-8">-->
+<!--		<title></title>-->
+<!--		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>-->
+<!--		<link rel="stylesheet" type="text/css" href="../../css/add.css"/>-->
+<!--	</head>-->
+<!--	<body>-->
+<!--		<div id="app">-->
+<!--			<div class="header">-->
+<!--				<span>添加快递员</span>-->
+<!--			</div>-->
+<!--			<div class="content">-->
+<!--				<table>-->
+<!--					<tr>-->
+<!--						<td class="text-right">姓名</td><td class="content_right"><input class="input" placeholder="请输入姓名"></td>-->
+<!--					</tr>-->
+<!--					<tr>-->
+<!--						<td class="text-right">手机号码</td><td class="content_right"><input class="input" placeholder="请输入姓名"></td>-->
+<!--					</tr>-->
+<!--					<tr>-->
+<!--						<td class="text-right">身份证号码</td><td class="content_right"><input class="input" placeholder="请输入姓名"></td>-->
+<!--					</tr>-->
+<!--					<tr>-->
+<!--						<td class="text-right">密码</td><td class="content_right"><input class="input" placeholder="请输入姓名"></td>-->
+<!--					</tr>-->
+<!--					<tr>-->
+<!--						<td></td><td class="content_right"><span class="btn btn-info">立即提交</span> <span class="btn">重置</span> </td>-->
+<!--					</tr>-->
+<!--				</table>-->
+<!--				-->
+<!--				-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
+	<link rel="stylesheet" type="text/css" href="../../css/add.css"/>
+	<style>
+		.layui-layer-content{
+			color: #fff;
+		}
+		#add_btn{
+			cursor: pointer;
+		}
+		#reset_btn{
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+<div id="app">
+	<div class="header">
+		<span>添加用户</span>
+	</div>
+	<div class="content">
+		<table>
+			<tr>
+				<td class="text-right">姓名</td><td class="content_right"><input class="input" placeholder="请输入姓名"></td>
+			</tr>
+			<tr>
+				<td class="text-right">手机号码</td><td class="content_right"><input class="input" placeholder="请输入手机号码"></td>
+			</tr>
+			<tr>
+				<td class="text-right">身份证号码</td><td class="content_right"><input class="input" placeholder="请输入身份证号码"></td>
+			</tr>
+			<tr>
+				<td class="text-right">密码</td><td class="content_right"><input class="input" placeholder="请输入密码"></td>
+			</tr>
+			<tr>
+				<td></td><td class="content_right"><span id="add_btn" class="btn btn-info">立即提交</span> <span id="reset_btn" class="btn">重置</span> </td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script src="../../assets/layui.all.js"></script>
+<script src="/qrcode/jquery2.1.4.js"></script>
+<script src="/layer/layer.js"></script>
+<script>
+	var form = layui.form
+			,layer = layui.layer;
+</script>
+<script>
+
+	function checkName(){
+		var userName = $("input:eq(0)").val();
+		if (userName == null || userName.length == 0){
+			alert("用户名有误");
+			console.log("false");
+			return false;
+		}
+		console.log("true");
+		return true;
+	}
+
+	function checkPhone(){
+		var userPhone = $("input:eq(1)").val();
+		var reg = /^1[3456789]\d{9}$/;
+		if (!reg.test(userPhone)){
+			alert("手机号码有误");
+			console.log("false");
+			return false;
+		}
+		console.log("true");
+		return true;
+	}
+
+	function checkIdNumber(){
+		var userIdNumber = $("input:eq(2)").val();
+		var reg = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+		if (!reg.test(userIdNumber)){
+			alert("身份证号码有误");
+			console.log("false");
+			return false;
+		}
+		console.log("true");
+		return true;
+	}
+
+	function checkPassword(){
+		var userPassword = $("input:eq(3)").val();
+		var reg = /^\w{3,20}$/;
+		if (!reg.test(userPassword)){
+			alert("密码有误");
+			console.log("false");
+			return false;
+		}
+		console.log("true");
+		return true;
+	}
+
+
+	$(function () {
+		$("#add_btn").click(function () {
+			if (checkName() && checkPhone() && checkPassword() && checkIdNumber()){
+				var windowId = layer.load();
+				var userName = $("input:eq(0)").val();
+				var userPhone = $("input:eq(1)").val();
+				var userIdNumber = $("input:eq(2)").val();
+				var userPassword = $("input:eq(3)").val();
+
+				$.post("/user/insert.do",{
+					userName:userName,
+					userPhone:userPhone,
+					userIdNumber:userIdNumber,
+					userPassword:userPassword
+				},function (data) {
+					layer.close(windowId);
+					layer.msg(data.result);
+					if (data.status == 0){
+						// 录入成功，恢复默认
+						$("input").val("");
+					}
+				});
+			}
+		});
+
+		$("#reset_btn").click(function () {
+			$("input").val("");
+		});
+	});
+</script>
+</body>
+</html>
