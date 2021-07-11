@@ -82,6 +82,25 @@ public interface BaseExpressDao {
      */
     boolean delete(int id);
 
+    /**
+     * 查询一年内所有快递
+     * @param userPhone
+     * @return
+     */
+    List<Express> findAllAmongYearByPhone(String userPhone);
 
+    /**
+     * 查询一个月内所有快递
+     * @param userPhone
+     * @return
+     */
+    List<Express> findAllAmongMonthByPhone(String userPhone);
 
+    /**
+     * 根据用户手机号和快递状态查询所有快递
+     * @param userPhone 手机号
+     * @param status    快递状态
+     * @return 查询的快递信息，手机号不存在时返回null
+     */
+    List<Express> findByUserPhoneAndStatus(String userPhone, int status);
 }

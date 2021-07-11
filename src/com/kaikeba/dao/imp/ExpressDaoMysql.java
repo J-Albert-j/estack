@@ -39,6 +39,18 @@ public class ExpressDaoMysql implements BaseExpressDao {
     public static final String SQL_UPDATE_STATUS = "UPDATE EXPRESS SET STATUS=1,OUTTIME=NOW(),CODE=NULL WHERE CODE=?";
     //快递的删除
     public static final String SQL_DELETE = "DELETE FROM EXPRESS WHERE ID=?";
+    /**
+     * 通过手机号查一年内的快递
+     */
+    public static final String SQL_FIND_BY_PHONE_YEAR = "SELECT * FROM EXPRESS WHERE USERPHONE=? AND YEAR(NOW())-YEAR(INTIME)<1";
+    /**
+     * 通过手机号查一个月内的快递
+     */
+    public static final String SQL_FIND_BY_PHONE_MONTH = "SELECT * FROM EXPRESS WHERE USERPHONE=? AND MONTH(NOW())-MONTH(INTIME)<1";
+    /**
+     * 通过用户手机号和快递状态查询快递信息
+     */
+    public static final String SQL_FIND_BY_USERPHONE_AND_STATUS = "SELECT * FROM EXPRESS WHERE USERPHONE=? AND STATUS=?";
 
 
     /**
@@ -420,5 +432,122 @@ public class ExpressDaoMysql implements BaseExpressDao {
             DruidUtil.close(conn,state,null);
         }
         return false;
+    }
+
+    /**
+     * 查询一年内所有快递
+     *
+     * @param userPhone
+     * @return
+     */
+    @Override
+    public List<Express> findAllAmongYearByPhone(String userPhone) {
+        ArrayList<Express> data = new ArrayList<>();
+        Connection conn = DruidUtil.getConnection();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = conn.prepareStatement(SQL_FIND_BY_PHONE_YEAR);
+            state.setString(1, userPhone);
+            result = state.executeQuery();
+
+            while (result.next()){
+                int id = result.getInt("id");
+                String number = result.getString("number");
+                String username = result.getString("username");
+                String company = result.getString("company");
+                String code = result.getString("code");
+                Timestamp inTime = result.getTimestamp("inTime");
+                Timestamp outTime = result.getTimestamp("outTime");
+                int status = result.getInt("status");
+                String sysPhone = result.getString("sysPhone");
+                Express e = new Express(id, number, username, userPhone, company, code, inTime, outTime, status, sysPhone);
+                data.add(e);
+            }
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }finally {
+            DruidUtil.close(conn,state,result);
+        }
+        return data;
+    }
+
+    /**
+     * 查询一个月内所有快递
+     *
+     * @param userPhone
+     * @return
+     */
+    @Override
+    public List<Express> findAllAmongMonthByPhone(String userPhone) {
+        ArrayList<Express> data = new ArrayList<>();
+        Connection conn = DruidUtil.getConnection();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = conn.prepareStatement(SQL_FIND_BY_PHONE_MONTH);
+            state.setString(1, userPhone);
+            result = state.executeQuery();
+
+            while (result.next()){
+                int id = result.getInt("id");
+                String number = result.getString("number");
+                String username = result.getString("username");
+                String company = result.getString("company");
+                String code = result.getString("code");
+                Timestamp inTime = result.getTimestamp("inTime");
+                Timestamp outTime = result.getTimestamp("outTime");
+                int status = result.getInt("status");
+                String sysPhone = result.getString("sysPhone");
+                Express e = new Express(id, number, username, userPhone, company, code, inTime, outTime, status, sysPhone);
+                data.add(e);
+            }
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }finally {
+            DruidUtil.close(conn,state,result);
+        }
+        return data;
+    }
+
+    /**
+     * 根据用户手机号和快递状态查询所有快递
+     *
+     * @param userPhone 手机号
+     * @param status    快递状态
+     * @return 查询的快递信息，手机号不存在时返回null
+     */
+    @Override
+    public List<Express> findByUserPhoneAndStatus(String userPhone, int status) {
+        ArrayList<Express> data = new ArrayList<>();
+        Connection conn = DruidUtil.getConnection();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = conn.prepareStatement(SQL_FIND_BY_USERPHONE_AND_STATUS);
+            state.setString(1,userPhone);
+            state.setInt(2,status);
+            result = state.executeQuery();
+            while (result.next()){
+                int id = result.getInt("id");
+                String number = result.getString("number");
+                String username = result.getString("username");
+                String company = result.getString("company");
+                String code = result.getString("code");
+                Timestamp inTime = result.getTimestamp("inTime");
+                Timestamp outTime = result.getTimestamp("outTime");
+                String sysPhone = result.getString("sysPhone");
+                Express e = new Express(id, number, username, userPhone, company, code, inTime, outTime, status, sysPhone);
+                data.add(e);
+            }
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }finally {
+            DruidUtil.close(conn,state,result);
+        }
+        return data;
     }
 }

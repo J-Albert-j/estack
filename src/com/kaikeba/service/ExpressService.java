@@ -140,4 +140,33 @@ public class ExpressService{
     public static boolean delete(int id) {
         return dao.delete(id);
     }
+
+    /**
+     * 根据用户手机号查询一年内所有快递
+     * @param userPhone 手机号
+     * @return 查询的快递信息，手机号不存在时返回null
+     */
+    public static List<Express> findAllAmongYearByPhone(String userPhone){
+        return dao.findAllAmongYearByPhone(userPhone);
+    }
+
+    /**
+     * 根据用户手机号查询一个月内所有快递
+     * @param userPhone 手机号
+     * @return 查询的快递信息，手机号不存在时返回null
+     */
+    public static List<Express> findAllAmongMonthByPhone(String userPhone){
+        return dao.findAllAmongMonthByPhone(userPhone);
+    }
+
+    /**
+     * 根据用户手机号和快递状态查询所有快递
+     *
+     * @param userPhone 手机号
+     * @param status 快递状态
+     * @return 查询的快递信息，手机号不存在时返回null
+     */
+    public static List<Express> findByUserPhoneAndStatus(String userPhone, int status) {
+        return dao.findByUserPhoneAndStatus(userPhone, status);
+    }
 }

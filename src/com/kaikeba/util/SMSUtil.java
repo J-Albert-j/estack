@@ -49,7 +49,7 @@ public class SMSUtil {
         return false;
     }
 
-    public static boolean loginSms(String phoneNumber,String code) {
+    public static boolean loginSMS(String phoneNumber,String code) {
 
 
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4GJVun7NhPS8FMgSqqS4", "TgTLk8KVJjESFu6iC1jTHsVMK53z5Q");
