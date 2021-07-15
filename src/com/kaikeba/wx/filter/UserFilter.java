@@ -14,14 +14,13 @@ import java.io.IOException;
  * @2021/7/11 17:19
  * 说明：
  */
-@WebFilter({"/index.html"})
-public class UserFilter {
-
-    //@Override
+@WebFilter({"/index.html","/"})
+public class UserFilter implements Filter {
+    @Override
     public void destroy() {
     }
 
-   // @Override
+    @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         HttpSession session = ((HttpServletRequest)req).getSession();
         Object wxUser = UserUtil.getWxUser(session);
@@ -33,8 +32,9 @@ public class UserFilter {
 
     }
 
-   // @Override
+    @Override
     public void init(FilterConfig config) throws ServletException {
 
     }
+
 }

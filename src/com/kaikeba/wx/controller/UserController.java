@@ -26,11 +26,11 @@ public class UserController {
     public String sendSms(HttpServletRequest request, HttpServletResponse response){
         String userPhone = request.getParameter("userPhone");
         // TODO:为了调试的时候不浪费钱，先把这两行注释了
-        String code = RandomUtil.getCode() + "";
-        boolean flag = SMSUtil.loginSMS(userPhone, code);
+        //String code = RandomUtil.getCode() + "";
+        //boolean flag = SMSUtil.loginSMS(userPhone, code);
 
-//        String code = "111111";
-//        boolean flag = true;
+        String code = "111111";
+        boolean flag = true;
 
         Message msg = new Message();
         if (flag){
@@ -51,11 +51,11 @@ public class UserController {
     public String updateSms(HttpServletRequest request, HttpServletResponse response){
         String newPhone = request.getParameter("newPhone");
         // TODO:为了调试的时候不浪费钱，先把这两行注释了
-        String code = RandomUtil.getCode() + "";
-        boolean flag = SMSUtil.loginSMS(newPhone, code);
+//        String code = RandomUtil.getCode() + "";
+//        boolean flag = SMSUtil.loginSMS(newPhone, code);
 
-//        String code = "222222";
-//        boolean flag = true;
+        String code = "222222";
+        boolean flag = true;
 
         Message msg = new Message();
         if (flag){
@@ -226,15 +226,22 @@ public class UserController {
     @ResponseBody("/wx/lazyboardTotal.do")
     public String lazyboardTotal(HttpServletRequest request, HttpServletResponse response){
         List<User> userList = UserService.findAll(false, 0, 0);
-        List<LazyBoardUser> result = new ArrayList<>();
-
-        for (User u : userList){
-            List<Express> byUserPhone = ExpressService.findByUserPhone(u.getUserPhone());
-            LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
-            result.add(lu);
+        List<LazyBoardUser> result = null;
+        //        List<LazyBoardUser> result = new ArrayList<>();
+        if(userList != null) {
+            result = new ArrayList<>();
+            for (User u : userList) {
+                List<Express> byUserPhone = ExpressService.findByUserPhone(u.getUserPhone());
+                LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
+                result.add(lu);
+            }
+//            try{
+//                Collections.sort(result);
+//            }catch(Exception e){
+//                Throwable throwable;
+//            }
         }
 
-        Collections.sort(result);
 
         Message msg = new Message();
         if (!result.isEmpty()){
@@ -252,15 +259,22 @@ public class UserController {
     @ResponseBody("/wx/lazyboardYear.do")
     public String lazyboardYear(HttpServletRequest request, HttpServletResponse response){
         List<User> userList = UserService.findAll(false, 0, 0);
-        List<LazyBoardUser> result = new ArrayList<>();
-
-        for (User u : userList){
-            List<Express> byUserPhone = ExpressService.findAllAmongYearByPhone(u.getUserPhone());
-            LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
-            result.add(lu);
+//        List<LazyBoardUser> result = new ArrayList<>();
+        List<LazyBoardUser> result = null;
+        if(userList != null) {
+            result = new ArrayList<>();
+            for (User u : userList) {
+                List<Express> byUserPhone = ExpressService.findAllAmongYearByPhone(u.getUserPhone());
+                LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
+                result.add(lu);
+            }
+//            try{
+//                Collections.sort(result);
+//            }catch(Exception e){
+//                Throwable throwable;
+//            }
         }
 
-        Collections.sort(result);
 
         Message msg = new Message();
         if (!result.isEmpty()){
@@ -278,15 +292,25 @@ public class UserController {
     @ResponseBody("/wx/lazyboardMonth.do")
     public String lazyboardMonth(HttpServletRequest request, HttpServletResponse response){
         List<User> userList = UserService.findAll(false, 0, 0);
-        List<LazyBoardUser> result = new ArrayList<>();
+//        List<LazyBoardUser> result = new ArrayList<>();
+        List<LazyBoardUser> result = null;
+        if(userList != null) {
+            result = new ArrayList<>();
+            for (User u : userList) {
+                List<Express> byUserPhone = ExpressService.findAllAmongMonthByPhone(u.getUserPhone());
+                LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
+                result.add(lu);
 
-        for (User u : userList){
-            List<Express> byUserPhone = ExpressService.findAllAmongMonthByPhone(u.getUserPhone());
-            LazyBoardUser lu = new LazyBoardUser(u.getUserPhone(), u.getUserName(), byUserPhone.size());
-            result.add(lu);
+            }
+//        try{
+//            Collections.sort(result);
+//        }catch(Exception e){
+//            Throwable throwable;
+//        }
+
         }
 
-        Collections.sort(result);
+
 
         Message msg = new Message();
         if (!result.isEmpty()){
